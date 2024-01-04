@@ -1,0 +1,5 @@
+k8s_yaml(['gs-catalog-db.yml', 'gs-order-service-db.yml', 'rabbitMQ.yml', 'redis.yml', 'keycloak.yml'])
+k8s_resource(workload='gs-catalog-db', port_forwards=['3307:3306'])
+k8s_resource(workload='gs-order-service-db', port_forwards=['3308:3306'])
+k8s_resource(workload='gs-redis', port_forwards=['6379:6379', '8001:8001'])
+k8s_resource(workload='gs-rabbitmq', port_forwards=['5672:5672', '15672:15672'])

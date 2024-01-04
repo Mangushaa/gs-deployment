@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  gs-grafana:
+    image: grafana/grafana:9.1.2
+    container_name: gs-grafana
+    depends_on:
+     - gs-loki
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=user
+      - GS_SECURITY_ADMIN_PASSWORD=password
+    volumes:
+      - ./observability/grafana/datasource.yml:/etc/grafana/provisioning/datasource.yml
+      - ./observability/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./observability/grafana/grafana.ini:etc/grafana/grafana.ini
+
+  gs-loki:
+    image: grafana/loki:2.6.1
+    container_name: gs-loki
+    ports:
+      - "3100:3100"
+
+  gs-fluent-bit:
+    image: grafana/fluent-bit-plugin-loki:2.6.1-amd64
+    container_name: gs-fluent-bit
+    ports:
+      - "24224:24224"
+    environment:
+      - LOKI_URL=http://gs-loki:3100/loki/api/v1/push
+    volumes:
+      - ./observability/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf

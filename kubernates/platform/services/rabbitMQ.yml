@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gs-rabbitmq
+  labels:
+    db: gs-rabbitmq
+spec:
+  selector:
+    matchLabels:
+      db: gs-rabbitmq
+  template:
+    metadata:
+      labels:
+        db: gs-rabbitmq
+    spec:
+      containers:
+        - name: gs-rabbitmq
+          image: rabbitmq:management
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/rabbitmq/rabbitmq.conf
+              readOnly: true
+      volumes:
+        - name: config-volume
+          hostPath:
+            path: /c/Users/Marko_Popyk/Desktop/prepering/petProjects/GameStore/GsBack/gs-deployment/kubernates/platform/services/config/rabbitmq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gs-rabbitmq
+  labels:
+    db: gs-rabbitmq
+spec:
+  type: ClusterIP
+  selector:
+    db: gs-rabbitmq
+  ports:
+    - name: rabbitmq
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: rabbitmq-console
+      protocol: TCP
+      port: 15672
+      targetPort: 15672

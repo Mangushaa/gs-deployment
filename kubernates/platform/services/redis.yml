@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gs-redis
+  labels:
+    db: gs-redis
+spec:
+  selector:
+    matchLabels:
+      db: gs-redis
+  template:
+    metadata:
+      labels:
+        db: gs-redis
+    spec:
+      containers:
+        - name: gs-redis
+          image: redis/redis-stack:latest
+#          resources:
+#            requests:
+#              cpu: 100m
+#              memory: 60Mi
+#            limits:
+#              cpu: 200m
+#              memory: 120Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gs-redis
+  labels:
+    db: gs-redis
+spec:
+  type: ClusterIP
+  selector:
+    db: gs-redis
+  ports:
+    - name: redis
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
+    - name: redis-insight
+      protocol: TCP
+      port: 8001
+      targetPort: 8001

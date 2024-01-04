@@ -1,0 +1,86 @@
+version: '3'
+services:
+#  gs-config-server:
+#    image: gs-config-server:1.0-SNAPSHOT
+#    ports:
+#      - '8080:8080'
+#    networks:
+#      gs-network:
+#    healthcheck:
+#      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#
+#  gs-catalog:
+#    image: gs-catalog:1
+#    depends_on:
+#      - gs-config-server
+#      - gs-catalog-db
+#    ports:
+#      - '8081:8081'
+#    networks:
+#      gs-network:
+#    environment:
+#      CONFIG_SERVER_URL: "http://gs-config-server"
+#      GS_CATALOG_DB_URL: "jdbc:mysql://gs-catalog-db:3307/${GS_CATALOG_DB}"
+#      GS_CATALOG_DB_USERNAME: ${MYSQL_USER}
+#      GS_CATALOG_DB_PASSWORD: ${MYSQL_PASSWORD}
+#
+#  gs-api-gateway:
+#    image: gs-api-gateway:1
+#    environment:
+#      CONFIG_SERVER_URL: "http://gs-config-server"
+#      GS_CATALOG_SERVICE_URL: http://gs-catalog:8081/api/v1/
+#      GS_ORDER_SERVICE_URL: http://gs-order-service:8082/api/v1/
+#    ports:
+#      - 9001:9001
+#    networks:
+#      gs-network:
+#
+#  gs-catalog-db:
+#    image: mysql
+#    environment:
+#      MYSQL_DATABASE: ${GS_CATALOG_DB}
+#      MYSQL_USER: ${MYSQL_USER}
+#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+#      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+#    ports:
+#      - '3307:3306'
+#    volumes:
+#      - gs-catalog-db-volume:/var/lib/mysql
+#    networks:
+#      gs-network:
+#
+#  gs-order-service-db:
+#    image: mysql
+#    environment:
+#      MYSQL_DATABASE: ${GS_ORDER_SERVICE_DB}
+#      MYSQL_USER: ${MYSQL_USER}
+#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+#      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+#    ports:
+#      - '3307:3306'
+#    volumes:
+#      - gs-order-service-db-volume:/var/lib/mysql
+#    networks:
+#      gs-network:
+#
+  gs-keycloak:
+    image: quay.io/keycloak/keycloak:19.0
+    container_name: "gs-keycloak"
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=user
+      - KEYCLOAK_ADMIN_PASSWORD=password
+    ports:
+      - 8080:8080
+
+
+
+networks:
+  gs-network:
+
+volumes:
+  gs-catalog-db-volume:
+  gs-order-service-db-volume:

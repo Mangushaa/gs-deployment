@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gs-catalog-db
+  labels:
+    db: gs-catalog-db
+spec:
+  selector:
+    matchLabels:
+      db: gs-catalog-db
+  template:
+    metadata:
+      labels:
+        db: gs-catalog-db
+    spec:
+      containers:
+        - name: gs-catalog-db
+          image: mysql:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_DATABASE
+              value: gs-catalog
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gs-catalog-db
+  labels:
+    db: gs-catalog-db
+spec:
+  type: ClusterIP
+  selector:
+    db: gs-catalog-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+
